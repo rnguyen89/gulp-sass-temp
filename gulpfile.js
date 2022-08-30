@@ -29,6 +29,10 @@ function html() {
   return src("src/index.html").pipe(dest("dist"));
 }
 
+function javascript() {
+  return src("src/js/*.js").pipe(uglify()).pipe(dest("dist"));
+}
+
 function fonts() {
   return src("src/fonts/*").pipe(dest("dist/fonts"));
 }
@@ -44,10 +48,11 @@ function watchSass() {
     },
   });
 
-  watch("src/index.html", html).on("change", browserSync.reload);
+  watch("src/*.html", html).on("change", browserSync.reload);
+  watch("src/js/*.js", javascript);
   watch("src/css/app.scss", runSass);
   watch("src/fonts/*", fonts);
   watch("src/img/*", images);
 }
 
-exports.default = series(html, runSass, fonts, images, watchSass);
+exports.default = series(html, javascript, runSass, fonts, images, watchSass);
